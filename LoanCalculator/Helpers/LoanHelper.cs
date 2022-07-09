@@ -19,10 +19,11 @@ namespace LoanCalculator.Helpers
             var monthlyInterest = 0.0m;
             var monthlyPrincipal = 0.0m;
             var monthlyRate = CalcMonthlyRate(loan.Rate);
+            var monthsInTerm = CalcMonthsInAnnualTerm(loan.Term);
 
             // Calculate a payment schedule
             // Loop over each month until reaching the term of the loan
-            for (int month = 1; month <= loan.Term; month++)
+            for (int month = 1; month <= monthsInTerm; month++)
             {
                 monthlyInterest = CalcMonthlyInterest(balance, monthlyRate);
                 totalInterest += monthlyInterest;
@@ -56,7 +57,7 @@ namespace LoanCalculator.Helpers
             var rateD = Convert.ToDouble(monthlyRate);
             var amountD = Convert.ToDouble(amount);
 
-            var paymentD = (amountD * rateD) / (1 - Math.Pow(1 + rateD, -term));
+            var paymentD = (amountD * rateD) / (1 - Math.Pow(1 + rateD, -term * 12));
 
             return Convert.ToDecimal(paymentD);
         }
@@ -69,6 +70,11 @@ namespace LoanCalculator.Helpers
         private decimal CalcMonthlyInterest(decimal balance, decimal monthlyRate)
         {
             return balance * monthlyRate;
+        }
+
+        private int CalcMonthsInAnnualTerm(int term)
+        {
+            return term * 12;
         }
     }
 }

@@ -8,10 +8,10 @@ Starting from : July 3, 2022
 <p align="left">A Loan Calculator built using MVC.</p>
 
 <p align="center">
-Last Updated : July 3, 2022
+Last Updated : July 9, 2022
 </p>
 <p align="center">
-v0.0.1.0
+v0.0.2.0
 </p>
 
 <p align="center">

@@ -24,7 +24,7 @@ namespace LoanCalculator.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Code()
         {
             return View();
         }
@@ -40,7 +40,7 @@ namespace LoanCalculator.Controllers
             loan.TotalCost = 0.0m;
             loan.Rate = 3.5m;
             loan.Amount = 150000m;
-            loan.Term = 60;
+            loan.Term = 30;
 
             return View(loan);
         }

@@ -1,10 +1,38 @@
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+:root {
+    --primary-color: #1d5888;
+    --secondary-color: #0a1016;
+    --dark-color: #292929;
+    --white-color: #dfebf3;
+}
+
+body {
+    background-color: var(--white-color);
+    font-family: 'Lucida Sans';
+}
+
+nav {
+    background-color: #fff;
+    font-family: 'Lucida Sans';
+}
+
+footer {
+    background-color: #fff;
+    font-family: 'Lucida Sans';
+}
+
 a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
+}
+
+main > .container {
+    padding: 60px 15px 0;
+    margin-bottom: 5rem;
+    font-family: 'Lucida Sans';
 }
 
 /* Provide sufficient contrast against white background */
@@ -67,6 +95,13 @@ body {
     width: 100%;
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
+    padding-right: 1rem;
+}
+.sticky-footer {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
 }
 
 /* ------------- Loan Form Styles ------------------- */
@@ -117,6 +152,10 @@ body {
     background-color: #ffffff;
 }
 
+.btn-secondary {
+    background-color: #747474
+}
+
 /* Orange Button */
 .btn-cfOrange {
     border-color: #ff993b;
@@ -126,4 +165,43 @@ body {
 .btn-cfOrange:hover {
     background-color: #ff993b;
     color: #212121;
+}
+
+/* Blue Button */
+.btn-Blue {
+    border-color: #369dc5;
+    color: #70adea;
+}
+
+.btn-Blue:hover {
+    background-color: #369dc5;
+    color: #1a2a39;
+}
+
+/* Green Button */
+.btn-Green {
+    border-color: #053d29;
+    color: #129e9f;
+}
+
+.btn-Green:hover {
+    background-color: #053d29;
+    color: #1dedee;
+}
+
+footer .social > a{
+    color: var(--primary-color);
+    opacity: 0.75;
+}
+
+footer .social > a:hover {
+    opacity: 0.9;
+    color: var(--secondary-color);
+}
+
+code[class*="language-"],
+    pre[class*="language-"] {
+        white-space: pre-wrap;
+        word-break: break-all;
+        word-wrap: break-word;
 }

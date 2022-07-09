@@ -1,0 +1,247 @@
+﻿@{
+    ViewData["Title"] = "Code";
+}
+<!--<h1>@ViewData["Title"]</h1>-->
+
+    <!-- ==== Main Section ==== -->
+ 
+        <div class="container py-5 px-5 mt-5">
+            <h2 class="border-1 border-bottom border-dark">The Code for Loan Calculator</h2>
+            <div class="row row-cols-1 row-cols-lg-2">
+
+
+                <!-- Code for HomeController -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Code()
+        {
+            return View();
+        }
+
+        public IActionResult App()
+        {
+            // Create an instance of the model
+            Loan loan = new();
+
+            // Set the default loan amount
+            loan.Payment = 0.0m;
+            loan.TotalInterest = 0.0m;
+            loan.TotalCost = 0.0m;
+            loan.Rate = 3.5m;
+            loan.Amount = 150000m;
+            loan.Term = 30;
+
+            return View(loan);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult App(Loan loan)
+        {
+            // Calculate the loan and get the payments
+            var loanHelper = new LoanHelper();
+
+            Loan newLoan = loanHelper.GetPayments(loan);
+
+            return View(newLoan);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>HomeController</h5>
+                    <p>
+                        Sets up the initial state of App, Index, and Code views.
+
+                        The overriding App function calls on LoanHelper to update the App view.
+                    </p>
+                </div>
+
+
+                <!-- Code for LoanHelper -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+    public class LoanHelper
+    {
+        public Loan GetPayments(Loan loan)
+        {
+            // Calculate monthly payment
+            loan.Payment = CalcPayment(loan.Amount, loan.Rate, loan.Term);
+
+            // Create loop from 1 to the term
+            var balance = loan.Amount;
+            var totalInterest = 0.0m;
+            var monthlyInterest = 0.0m;
+            var monthlyPrincipal = 0.0m;
+            var monthlyRate = CalcMonthlyRate(loan.Rate);
+            var monthsInTerm = CalcMonthsInAnnualTerm(loan.Term);
+
+            // Calculate a payment schedule
+            // Loop over each month until reaching the term of the loan
+            for (int month = 1; month <= monthsInTerm; month++)
+            {
+                monthlyInterest = CalcMonthlyInterest(balance, monthlyRate);
+                totalInterest += monthlyInterest;
+                monthlyPrincipal = loan.Payment - monthlyInterest;
+                balance -= monthlyPrincipal;
+
+                LoanPayment loanPayment = new();
+
+                loanPayment.Month = month;
+                loanPayment.Payment = loan.Payment;
+                loanPayment.MonthlyPrincipal = monthlyPrincipal;
+                loanPayment.MonthlyInterest = monthlyInterest;
+                loanPayment.TotalInterest = totalInterest;
+                loanPayment.Balance = balance;
+
+                // Push payments in the loan
+                // Push the object into the loan model
+                loan.Payments.Add(loanPayment);
+            }
+
+            loan.TotalInterest = totalInterest;
+            loan.TotalCost = loan.Amount + totalInterest;
+
+            // Return the loan to the view
+            return loan;
+        }
+
+        private decimal CalcPayment(decimal amount, decimal rate, int term)
+        {
+            var monthlyRate = CalcMonthlyRate(rate);
+            var rateD = Convert.ToDouble(monthlyRate);
+            var amountD = Convert.ToDouble(amount);
+
+            var paymentD = (amountD * rateD) / (1 - Math.Pow(1 + rateD, -term * 12));
+
+            return Convert.ToDecimal(paymentD);
+        }
+
+        private decimal CalcMonthlyRate(decimal rate)
+        {
+            return rate / 1200;
+        }
+
+        private decimal CalcMonthlyInterest(decimal balance, decimal monthlyRate)
+        {
+            return balance * monthlyRate;
+        }
+
+        private int CalcMonthsInAnnualTerm(int term)
+        {
+            return term * 12;
+        }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>LoanHelper</h5>
+                    <h6>GetPayment function</h6>
+                    <p>
+                        Calls on private functions to calculate the monthly payment of a given loan amount, term, and rate.
+                    </p>
+                    <p>
+                        For each month, it returns the following: 
+                        <ul>
+                            <li>Monthly payment</li>
+                            <li>Monthly principal</li>
+                            <li>Monthly interest</li>
+                            <li>Total interest</li>
+                            <li>Remaining balance</li>
+                        </ul>
+                    </p>
+                    <br />
+                    <h6>Private functions</h6>
+                    <p>
+                        Local functions that calculate the following:
+                        <ul>
+                            <li>Months in an annual payment period</li>
+                            <li>Monthly interest</li>
+                            <li>Monthly payment</li>
+                        </ul>
+                    </p>
+                </div>
+
+
+                <!-- Code for Loan -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+    public class Loan
+    {
+        public decimal Amount { get; set; }
+
+        public decimal Rate { get; set; }
+
+        public int Term { get; set; }
+
+        public decimal Payment { get; set; }
+
+        public decimal TotalInterest { get; set; }
+
+        public decimal TotalCost { get; set; }
+
+        public List<LoanPayment> Payments { get; set; } = new List<LoanPayment>();
+
+
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>Loan</h5>
+                    <p>
+                        Constructs the structure of a loan.
+                    </p>
+                </div>
+
+
+                <!-- Code for LoanPayment -->
+                <div class="col-lg-8">
+                    <pre class="line-numbers"><code class="language-javascript">
+    public class LoanPayment
+    {
+        public int Month { get; set; }
+        public decimal Payment { get; set; }
+        public decimal MonthlyPrincipal { get; set; }
+        public decimal MonthlyInterest { get; set; }
+        public decimal TotalInterest { get; set; }
+        public decimal Balance {get; set; }
+    }
+                    </code>
+                    </pre>
+                </div>
+
+                <div class="col-lg-4">
+                    <h5>LoanPayment</h5>
+                    <p>
+                        Constructs the structure of a loan payment.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <br />
