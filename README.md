@@ -11,7 +11,7 @@ Starting from : July 3, 2022
 Last Updated : July 9, 2022
 </p>
 <p align="center">
-v0.0.2.0
+v0.0.2.1
 </p>
 
 <p align="center">
